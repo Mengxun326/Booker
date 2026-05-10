@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.0] - 2026-05-10
+
 ### Added
 
 - Basic initialisation of repository
+- Basic function, converting each file of a PDF into JPG, to test GitHub CI configuration - this function will be removed
 
-[unreleased]: https://github.com/DostLeFan/GameOfLife/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/DostLeFan/GameOfLife/compare/v0.0.0...HEAD
+[v0.0.0]: https://github.com/DostLeFan/GameOfLife/releases/tag/v0.0.0
