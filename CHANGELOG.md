@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.2] - 2026-05-10
+
+### Added
+
+- Added "locales" directory - for a future functionnality
+
+### Fixed
+
+- Fixed this changelog file - I forgot a lot of things, duh
+
 ## [v0.0.1] - 2026-05-10
 
 ### Fixed
@@ -22,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic initialisation of repository
 - Basic function, converting each file of a PDF into JPG, to test GitHub CI configuration - this function will be removed
 
-[unreleased]: https://github.com/DostLeFan/GameOfLife/compare/v0.0.1...HEAD
-[v0.0.1]: https://github.com/DostLeFan/GameOfLife/compare/v0.0.0...v0.0.1
-[v0.0.0]: https://github.com/DostLeFan/GameOfLife/releases/tag/v0.0.0
+[unreleased]: https://github.com/DostLeFan/Booker/compare/v0.0.2...HEAD
+[v0.0.2]: https://github.com/DostLeFan/Booker/compare/v0.0.1...v0.0.2
+[v0.0.1]: https://github.com/DostLeFan/Booker/compare/v0.0.0...v0.0.1
+[v0.0.0]: https://github.com/DostLeFan/Booker/releases/tag/v0.0.0
