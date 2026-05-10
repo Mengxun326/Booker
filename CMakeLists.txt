@@ -233,12 +233,28 @@ if(WIN32)
 	set(Iconv_LIBRARY "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${STATIC_LIB_PREFIX}iconv_static${STATIC_LIB_SUFFIX}" CACHE FILEPATH "" FORCE)
 	
 	message(STATUS "win-iconv downloaded and configured.")
+elseif(APPLE)
+	find_library(ICONV_LIBRARY iconv)
+	
+	if(NOT TARGET Iconv::Iconv)
+		add_library(Iconv::Iconv INTERFACE IMPORTED GLOBAL)
+	endif()
+	
+	if(ICONV_LIBRARY)
+		set_target_properties(Iconv::Iconv PROPERTIES INTERFACE_LINK_LIBRARIES "${ICONV_LIBRARY}")
+		message(STATUS "Iconv::Iconv → system iconv (${ICONV_LIBRARY})")
+	else()
+		message(WARNING "Could not find system iconv library on macOS")
+	endif()
+	
+	set(Iconv_FOUND TRUE CACHE BOOL "" FORCE)
 else()
 	if(NOT TARGET Iconv::Iconv)
 		add_library(Iconv::Iconv INTERFACE IMPORTED GLOBAL)
 	endif()
 	
 	set(Iconv_FOUND TRUE CACHE BOOL "" FORCE)
+	
 	message(STATUS "Iconv::Iconv → built-in libc")
 endif()
 
