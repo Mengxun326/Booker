@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(PDF CXX C)
+project(Booker CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -350,7 +350,11 @@ ExternalProject_Add(
 		"${POPPLER_INSTALL_DIR}/lib/${STATIC_LIB_PREFIX}poppler-cpp${STATIC_LIB_SUFFIX}"
 )
 
-ExternalProject_Add_StepDependencies(poppler-ext configure libjpeg-turbo-ext zlibstatic freetype png_static iconv_static)
+if(WIN32)
+	ExternalProject_Add_StepDependencies(poppler-ext configure libjpeg-turbo-ext zlibstatic freetype png_static iconv_static)
+else()
+	ExternalProject_Add_StepDependencies(poppler-ext configure libjpeg-turbo-ext zlibstatic freetype png_static)
+endif()
 
 message(STATUS "Poppler configured (will build with the project).")
 
