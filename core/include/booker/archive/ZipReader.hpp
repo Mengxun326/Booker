@@ -5,13 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include "ZipException.hpp"
-
-struct EntryInfo
-{
-	std::string name;
-	uint64_t uncompressedSize;
-	bool isDirectory;
-};
+#include "ArchiveUtils.hpp"
 
 class ZipReader
 {

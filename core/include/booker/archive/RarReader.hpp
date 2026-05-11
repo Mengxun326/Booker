@@ -6,7 +6,7 @@
 #include <vector>
 #include <utility>
 #include <unarr.h>
-#include "ZipReader.hpp"
+#include "ArchiveUtils.hpp"
 
 class RarReader
 {
