@@ -1,4 +1,4 @@
-#include "../include/Exception.hpp"
+#include "../../../include/booker/utils/Exception.hpp"
 
 Exception::Exception(char const* what_arg, char const* file, int line, char const* functionName) noexcept : std::exception(), m_msg(what_arg), m_file(file), m_line(line), m_function(functionName)
 {

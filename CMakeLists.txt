@@ -68,6 +68,32 @@ endif()
 
 message(STATUS "zlib downloaded.")
 
+# minizip
+message(STATUS "Setting up minizip...")
+
+add_library(minizip STATIC
+	${zlib_SOURCE_DIR}/contrib/minizip/unzip.c
+	${zlib_SOURCE_DIR}/contrib/minizip/zip.c
+	${zlib_SOURCE_DIR}/contrib/minizip/ioapi.c
+)
+
+target_include_directories(minizip PUBLIC
+	${zlib_SOURCE_DIR}/contrib/minizip
+	${zlib_SOURCE_DIR}
+	${zlib_BINARY_DIR}
+)
+
+target_link_libraries(minizip PUBLIC ZLIB::ZLIB)
+
+message(STATUS "minizip setup.")
+
+if(WIN32)
+	target_sources(minizip PRIVATE ${zlib_SOURCE_DIR}/contrib/minizip/iowin32.c)
+	target_compile_definitions(minizip PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
+add_library(booker::minizip ALIAS minizip)
+
 # libjpeg-turbo
 message(STATUS "Configuring libjpeg-turbo (ExternalProject)...")
 
