@@ -76,6 +76,7 @@ add_library(${CORE_NAME} ${BOOKER_CORE_SOURCES} ${BOOKER_CORE_HEADERS})
 add_library(booker::core ALIAS ${CORE_NAME})
 
 target_include_directories(${CORE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${CORE_NAME} PRIVATE ${libharu_SOURCE_DIR}/include ${libharu_BINARY_DIR}/include)
 target_compile_features(${CORE_NAME} PUBLIC cxx_std_17)
 target_link_libraries(${CORE_NAME} PRIVATE poppler-cpp poppler ZLIB::ZLIB minizip PNG::PNG JPEG::JPEG Freetype::Freetype Iconv::Iconv RarLib::RarLib unarr imageinfo hpdf)
 
