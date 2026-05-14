@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - io directory in core
 - TempDirectory class to manage a temporary directory
 - DirectoryUtils files to get utilities functions
+- Document sub-module in core, to handle very basic and primitive ebook
+- Format sub-module in core, to handle very basic and primitive ebook
+
+### Changed
+
+- README.md is now written in basic first version (yay !)
 
 ## [0.0.8] - 2026-05-11
 
