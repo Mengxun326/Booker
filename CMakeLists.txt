@@ -150,6 +150,23 @@ set_target_properties(JPEG::JPEG PROPERTIES
 	INTERFACE_INCLUDE_DIRECTORIES "${DEPS_INSTALL_DIR}/include"
 )
 
+# TurboJPEG target
+if(MSVC)
+	set(TURBOJPEG_LIB_FILE "turbojpeg-static.lib")
+else()
+	set(TURBOJPEG_LIB_FILE "${STATIC_LIB_PREFIX}turbojpeg${STATIC_LIB_SUFFIX}")
+endif()
+
+add_library(turbojpeg STATIC IMPORTED GLOBAL)
+add_dependencies(turbojpeg libjpeg-turbo-ext)
+
+set_target_properties(
+	turbojpeg
+	PROPERTIES
+	IMPORTED_LOCATION "${DEPS_INSTALL_DIR}/lib/${TURBOJPEG_LIB_FILE}"
+	INTERFACE_INCLUDE_DIRECTORIES "${DEPS_INSTALL_DIR}/include"
+)
+
 file(WRITE "${CMAKE_BINARY_DIR}/redirects/JPEGConfig.cmake" "
 	if(NOT TARGET JPEG::JPEG)
 		add_library(JPEG::JPEG STATIC IMPORTED GLOBAL)

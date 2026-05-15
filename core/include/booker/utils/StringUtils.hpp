@@ -8,6 +8,9 @@
 
 #include <string>
 
-std::string fillWithLeadingZeros(int nb, int maximum);
+namespace booker
+{
+	std::string fillWithLeadingZeros(int nb, int maximum);
+}
 
 #endif // STRINGUTILS_HPP

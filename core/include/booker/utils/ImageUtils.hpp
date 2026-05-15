@@ -8,8 +8,14 @@
 
 #include <filesystem>
 #include <string>
+#include <vector>
+#include <cstdint>
 
-bool isImageExtension(std::filesystem::path const& filePath);
-std::string mimeFromExtension(std::filesystem::path const& filePath);
+namespace booker
+{
+	bool isImageExtension(std::filesystem::path const& filePath);
+	std::string mimeFromExtension(std::filesystem::path const& filePath);
+	std::vector<uint8_t> convertToJPEG(std::vector<uint8_t> const& inputData, std::string const& inputMimeType, int quality = 95);
+}
 
 #endif // IMAGEUTILS_HPP

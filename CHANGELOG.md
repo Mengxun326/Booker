@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ImageUtils and StringUtils
 - CbzHandler and CbrHandler
 - PdfHandler
+- booker namespace
+- Some other libs
+- A mini CLI to test conversions
+- CBZ -> PDF is tested, seems OK
 
 ### Changed
 

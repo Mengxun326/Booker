@@ -14,51 +14,54 @@
 #include <unarr.h>
 #include "ArchiveUtils.hpp"
 
-/*!
-\class RarReader RarReader.hpp "core/include/booker/archive/RarReader.hpp"
-\brief A class allowing to read RAR informations, and deflating RAR archive.
-*/
-
-class RarReader
+namespace booker
 {
-	public:
-		/*!
-		\brief Constructor.
-		\param path (std::filesystem::path) : Archive path.
-		\throw RarException Archive cannot be opened.
-		*/
-		RarReader(std::filesystem::path const& path);
-		/*!
-		\brief Destructor.
-		\details Close archive.
-		*/
-		~RarReader();
-		
-		std::vector<EntryInfo> entries();
-		/*!
-		\brief Extract an entry from archive into a stream.
-		\throw RarException The given entry cannot be found.
-		*/
-		void extractToStream(EntryInfo const& entry, std::ostream& os) const;
-		/*!
-		\brief Extract an entry from archive into a raw buffer.
-		\throw RarException The given entry cannot be found.
-		*/
-		std::vector<uint8_t> extract(EntryInfo const& entry) const;
-		/*!
-		\brief Extract the archive.
-		\throw RarException A Zip Slip is detected.
-		*/
-		void extractAll(std::filesystem::path const& destination) const;
+	/*!
+	\class RarReader RarReader.hpp "core/include/booker/archive/RarReader.hpp"
+	\brief A class allowing to read RAR informations, and deflating RAR archive.
+	*/
 	
-	private:
-		std::filesystem::path m_path;
-		ar_stream* m_stream;
-		ar_archive* m_handle;
-		std::vector<EntryInfo> m_cachedEntries;
-		bool m_isCachedEntries = false;
+	class RarReader
+	{
+		public:
+			/*!
+			\brief Constructor.
+			\param path (std::filesystem::path) : Archive path.
+			\throw RarException Archive cannot be opened.
+			*/
+			RarReader(std::filesystem::path const& path);
+			/*!
+			\brief Destructor.
+			\details Close archive.
+			*/
+			~RarReader();
+			
+			std::vector<EntryInfo> entries();
+			/*!
+			\brief Extract an entry from archive into a stream.
+			\throw RarException The given entry cannot be found.
+			*/
+			void extractToStream(EntryInfo const& entry, std::ostream& os) const;
+			/*!
+			\brief Extract an entry from archive into a raw buffer.
+			\throw RarException The given entry cannot be found.
+			*/
+			std::vector<uint8_t> extract(EntryInfo const& entry) const;
+			/*!
+			\brief Extract the archive.
+			\throw RarException A Zip Slip is detected.
+			*/
+			void extractAll(std::filesystem::path const& destination) const;
 		
-		std::pair<ar_stream*, ar_archive*> reopen() const;
-};
+		private:
+			std::filesystem::path m_path;
+			ar_stream* m_stream;
+			ar_archive* m_handle;
+			std::vector<EntryInfo> m_cachedEntries;
+			bool m_isCachedEntries = false;
+			
+			std::pair<ar_stream*, ar_archive*> reopen() const;
+	};
+}
 
 #endif // DEF_RARREADER

@@ -69,6 +69,38 @@ FetchContent_MakeAvailable(libharu)
 
 message(STATUS "libharu downloaded.")
 
+# stb headers
+message(STATUS "Downloading stb headers...")
+
+set(STB_DIR ${CMAKE_BINARY_DIR}/stb)
+
+file(DOWNLOAD https://raw.githubusercontent.com/nothings/stb/master/stb_image.h ${STB_DIR}/stb_image.h)
+
+file(DOWNLOAD https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h ${STB_DIR}/stb_image_write.h)
+
+add_library(stb INTERFACE)
+target_include_directories(stb INTERFACE ${STB_DIR})
+
+message(STATUS "stb headers downloaded.")
+
+# libwebp
+message(STATUS "Downloading libwebp...")
+
+FetchContent_Declare(
+	libwebp
+	GIT_REPOSITORY https://chromium.googlesource.com/webm/libwebp
+	GIT_TAG v1.4.0
+	GIT_SHALLOW TRUE
+)
+
+FetchContent_MakeAvailable(libwebp)
+
+if(NOT TARGET WebP::webp)
+	add_library(WebP::webp ALIAS webp)
+endif()
+
+message(STATUS "libwebp downloaded.")
+
 file(GLOB_RECURSE BOOKER_CORE_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 file(GLOB_RECURSE BOOKER_CORE_HEADERS CONFIGURE_DEPENDS "include/*.hpp")
 
@@ -78,7 +110,7 @@ add_library(booker::core ALIAS ${CORE_NAME})
 target_include_directories(${CORE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(${CORE_NAME} PRIVATE ${libharu_SOURCE_DIR}/include ${libharu_BINARY_DIR}/include)
 target_compile_features(${CORE_NAME} PUBLIC cxx_std_17)
-target_link_libraries(${CORE_NAME} PRIVATE poppler-cpp poppler ZLIB::ZLIB minizip PNG::PNG JPEG::JPEG Freetype::Freetype Iconv::Iconv RarLib::RarLib unarr imageinfo hpdf)
+target_link_libraries(${CORE_NAME} PRIVATE poppler-cpp poppler ZLIB::ZLIB minizip PNG::PNG JPEG::JPEG Freetype::Freetype Iconv::Iconv turbojpeg RarLib::RarLib unarr imageinfo hpdf stb WebP::webp)
 
 add_dependencies(${CORE_NAME} poppler-ext libjpeg-turbo-ext)
 
