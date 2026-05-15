@@ -109,12 +109,14 @@ namespace booker
 				ext = ".jpg";
 			else if(page.mimeType() == "image/png")
 				ext = ".png";
+			else if(page.mimeType() == "image/webp")
+				ext = ".webp";
 			else
 				ext = ".jpg";
 			
 			std::string fileName = "page_" + fillWithLeadingZeros(static_cast<int>((i + 1)), static_cast<int>(doc.pageCount())) + ext;
 			
-			writer.addFile(fileName, data);
+			writer.addFile(fileName, data, 6);
 			
 			page.clearCache();
 		}

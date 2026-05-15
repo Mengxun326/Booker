@@ -93,7 +93,14 @@ namespace booker
 	bool CbrHandler::writeDocument(Document const& doc, std::filesystem::path const& output) const
 	{
 		RarWriter writer;
-		std::vector<std::string> arrayPages;
+		std::vector<std::filesystem::path> arrayPages;
+		
+		std::filesystem::path tempPath = output;
+		
+		while(tempPath.has_extension())
+			tempPath.replace_extension();
+		
+		std::filesystem::create_directories(tempPath);
 		
 		for(size_t i=0;i<doc.pageCount();++i)
 		{
@@ -109,10 +116,12 @@ namespace booker
 				ext = ".jpg";
 			else if(page.mimeType() == "image/png")
 				ext = ".png";
+			else if(page.mimeType() == "image/webp")
+				ext = ".webp";
 			else
 				ext = ".jpg";
 			
-			std::string fileName = "page_" + fillWithLeadingZeros(static_cast<int>((i + 1)), static_cast<int>(doc.pageCount())) + ext;
+			std::filesystem::path fileName = tempPath / ("page_" + fillWithLeadingZeros(static_cast<int>((i + 1)), static_cast<int>(doc.pageCount())) + ext);
 			
 			std::ofstream ofs(fileName, std::ios::binary);
 			ofs.write(reinterpret_cast<char const*>(data.data()), static_cast<std::streamsize>(data.size()));
@@ -123,10 +132,12 @@ namespace booker
 			page.clearCache();
 		}
 		
-		writer.compressMultipleFiles(arrayPages, output.filename().string());
+		writer.compressDirectory(tempPath.string(), output.filename().string(), false);
 		
 		for(size_t i=0;i<arrayPages.size();++i)
 			std::filesystem::remove(arrayPages[i]);
+		
+		std::filesystem::remove_all(tempPath);
 		
 		return true;
 	}

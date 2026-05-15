@@ -100,14 +100,8 @@ namespace booker
 			while((bytesRead = ar_entry_uncompress(archive, chunk.data(), chunk.size())) > 0)
 				os.write(chunk.data(), static_cast<std::streamsize>(bytesRead));
 			
-			ar_close_archive(archive);
-			ar_close(stream);
-			
 			return;
 		}
-		
-		ar_close_archive(archive);
-		ar_close(stream);
 		
 		throw MAKE_EXCEPTION(RarException, "ERROR : Entry \"" + entry.name + "\" in archive \"" + m_path.string() + "\".");
 	}
@@ -127,9 +121,6 @@ namespace booker
 			std::vector<uint8_t> buffer(entry.uncompressedSize);
 			
 			ar_entry_uncompress(archive, buffer.data(), buffer.size());
-			
-			ar_close_archive(archive);
-			ar_close(stream);
 			
 			return buffer;
 		}

@@ -112,6 +112,7 @@ namespace booker
 				{
 					decoded[(i * 3 + 0)] = rgba[(i * 4 + 0)];
 					decoded[(i * 3 + 1)] = rgba[(i * 4 + 1)];
+					decoded[(i * 3 + 2)] = rgba[(i * 4 + 2)];
 				}
 				
 				WebPFree(rgba);
