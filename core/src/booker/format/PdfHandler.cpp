@@ -74,20 +74,26 @@ namespace booker
 		if(pageIndex >= static_cast<size_t>(doc->pages()))
 			return {};
 		
-		std::unique_ptr<poppler::page> page = std::unique_ptr<poppler::page>(doc->create_page(static_cast<int>(pageIndex)));
+		std::shared_ptr<poppler::page> page = std::shared_ptr<poppler::page>(doc->create_page(static_cast<int>(pageIndex)));
 		
 		if(!page)
 			return {};
 		
-		poppler::page_renderer renderer;
+		std::filesystem::path tempImg = convertPdfPageToJPEG(page, 300, "page");
+		std::vector<uint8_t> data = loadJpegData(tempImg);
+		
+		std::filesystem::remove(tempImg);
+		
+		return data;
+		
+		/*poppler::page_renderer renderer;
 		renderer.set_render_hint(poppler::page_renderer::antialiasing, true);
 		renderer.set_render_hint(poppler::page_renderer::text_antialiasing, true);
 		renderer.set_image_format(poppler::image::format_rgb24);
 		
 		int const dpi = 300;
-		double const scale = static_cast<double>(dpi) / 72.0;
 		
-		poppler::image img = renderer.render_page(page.get(), scale, scale);
+		poppler::image img = renderer.render_page(page.get(), dpi, dpi);
 		
 		if(!img.is_valid())
 			return {};
@@ -115,7 +121,7 @@ namespace booker
 		tjFree(jpegBuf);
 		tjDestroy(tjInstance);
 		
-		return result;
+		return result;*/
 	}
 	
 	bool PdfHandler::writeDocument(Document const& doc, std::filesystem::path const& output) const

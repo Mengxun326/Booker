@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CBZ -> CBR is tested, seems OK
 - CBR -> CBZ is tested, seems OK
 - CBR -> PDF is tested, seems OK
+- PDF -> CBR is tested, seems OK
+- PDF -> CBZ is tested, seems OK
+- Created sample PDF, CBR and CBZ for tests
 
 ## [0.0.9] - 2026-05-15
 

@@ -1,6 +1,8 @@
 #include "../../../include/booker/utils/ImageUtils.hpp"
 
+#include <fstream>
 #include <map>
+//#include <cstdio>
 #include <cctype>
 #include <cstring>
 
@@ -9,13 +11,70 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
+//#include <turbojpeg.h>
 #include <webp/decode.h>
 #include <webp/encode.h>
+#include <poppler/cpp/poppler-page-renderer.h>
+#include <poppler/cpp/poppler-image.h>
 
 #include "../../../include/booker/utils/Exception.hpp"
 
 namespace booker
 {
+	/*std::vector<uint8_t> readFile(std::filesystem::path const& filePath)
+	{
+		std::ifstream ifs(filePath, std::ios::binary | std::ios::ate);
+		
+		if(!ifs.is_open())
+			throw MAKE_EXCEPTION(Exception, "ERROR : Cannot open file: " + filePath.string());
+		
+		std::streamsize size = ifs.tellg();
+		ifs.seekg(0, std::ios::beg);
+		
+		std::vector<uint8_t> buffer(size);
+		
+		if(!ifs.read(reinterpret_cast<char*>(buffer.data()), size))
+			throw MAKE_EXCEPTION(Exception, "ERROR : Failed to read file \"" + filePath.string() + "\".");
+		
+		return buffer;
+	}
+	
+	std::vector<uint8_t> decodeJpegTurbo(uint8_t const* jpegData, unsigned long jpegSize)
+	{
+		tjhandle handle = tjInitDecompress();
+		
+		if(!handle)
+			return {};
+		
+		int width;
+		int height;
+		int jpegSubsamp;
+		int jpegColorspace;
+		
+		if(tjDecompressHeader3(handle, jpegData, jpegSize, &width, &height, &jpegSubsamp, &jpegColorspace) != 0)
+		{
+			tjDestroy(handle);
+			
+			return {};
+		}
+		
+		int const pixelFormat = TJPF_RGB;
+		int const numComponents = tjPixelSize[pixelFormat];
+		unsigned long const dstSize = width * height * numComponents;
+		std::vector<uint8_t> dstBuffer(dstSize);
+		
+		if(tjDecompress2(handle, jpegData, jpegSize, dstBuffer.data(), width, 0, height, pixelFormat, TJFLAG_FASTDCT) != 0)
+		{
+			tjDestroy(handle);
+			
+			return {};
+		}
+		
+		tjDestroy(handle);
+		
+		return dstBuffer;
+	}*/
+	
 	static std::map<std::string, std::string> const IMAGE_MIME_MAP = {
 		// JPEG
 		{".jpg", "image/jpeg"},
@@ -161,5 +220,52 @@ namespace booker
 			throw MAKE_EXCEPTION(Exception, "Failed to encode image to JPEG");
 		
 		return result;
+	}
+	
+	std::string convertPdfPageToJPEG(std::shared_ptr<poppler::page> page, int dpi, std::string const& outputPrefix)
+	{
+		if(!poppler::page_renderer::can_render())
+			throw MAKE_EXCEPTION(Exception, "ERROR : renderer not supported (missing Splash backend).");
+		
+		poppler::page_renderer renderer;
+		renderer.set_render_hint(poppler::page_renderer::antialiasing, true);
+		renderer.set_render_hint(poppler::page_renderer::text_antialiasing, true);
+		renderer.set_image_format(poppler::image::format_rgb24);
+		
+		poppler::image img = renderer.render_page(page.get(), dpi, dpi);
+		
+		if(!img.is_valid())
+			throw MAKE_EXCEPTION(Exception, "ERROR : Invalid image page.");
+		
+		std::string outFilename = outputPrefix + "_temp.jpg";
+		
+		if(!img.save(outFilename, "jpeg"))
+			throw MAKE_EXCEPTION(Exception, "ERROR : Unable to save \"" + outFilename + "\".");
+		
+		return outFilename;
+	}
+	
+	std::vector<uint8_t> loadJpegData(std::filesystem::path const& filePath)
+	{
+		/*std::vector<uint8_t> jpegData = readFile(filePath);
+		
+		return decodeJpegTurbo(jpegData.data(), jpegData.size());*/
+		
+		//return readFile(filePath);
+		
+		std::ifstream ifs(filePath, std::ios::binary | std::ios::ate);
+		
+		if(!ifs.is_open())
+			throw MAKE_EXCEPTION(Exception, "ERROR : Cannot open file: " + filePath.string());
+		
+		std::streamsize size = ifs.tellg();
+		ifs.seekg(0, std::ios::beg);
+		
+		std::vector<uint8_t> buffer(size);
+		
+		if(!ifs.read(reinterpret_cast<char*>(buffer.data()), size))
+			throw MAKE_EXCEPTION(Exception, "ERROR : Failed to read file \"" + filePath.string() + "\".");
+		
+		return buffer;
 	}
 }
