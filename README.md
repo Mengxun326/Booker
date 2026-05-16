@@ -119,12 +119,13 @@ There is a minimal roadmap for future developments.
 - [ ] Metadata abstraction
 
 ## Conversion
-- [ ] CBZ -> CBR
-- [ ] CBZ -> PDF
-- [ ] CBR -> CBZ
-- [ ] CBR -> PDF
-- [ ] PDF -> CBZ
-- [ ] PDF -> CBR
+- [X] CBZ -> CBR
+- [X] CBZ -> PDF
+- [X] CBR -> CBZ
+- [X] CBR -> PDF
+- [X] PDF -> CBZ
+- [X] PDF -> CBR
+- [ ] Batch conversion
 
 ## Ecosystem
 - [ ] Plugin system
