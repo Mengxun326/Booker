@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Pull Request build workflow
+- Added a CONTRIBUTING.md file
+- Improving README
+
+### Changed
+
+- Moved core dependencies from root CMakeLists.txt to core CMakeLists.txt
+
+## [0.0.10] - 2026-05-16
+
+### Added
+
 - CBZ -> CBR is tested, seems OK
 - CBR -> CBZ is tested, seems OK
 - CBR -> PDF is tested, seems OK
@@ -109,7 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic initialisation of repository
 - Basic function, converting each file of a PDF into JPG, to test GitHub CI configuration - this function will be removed
 
-[unreleased]: https://github.com/DostLeFan/Booker/compare/v0.0.9...HEAD
+[unreleased]: https://github.com/DostLeFan/Booker/compare/v0.0.10...HEAD
+[0.0.10]: https://github.com/DostLeFan/Booker/compare/v0.0.9...v0.0.10
 [0.0.9]: https://github.com/DostLeFan/Booker/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/DostLeFan/Booker/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/DostLeFan/Booker/compare/v0.0.6...v0.0.7

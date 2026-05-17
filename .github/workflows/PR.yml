@@ -1,0 +1,49 @@
+name: PullRequest
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux:
+    name: Build - Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+
+      - name: Configure
+        run: cmake --preset debug -G "Unix Makefiles"
+
+      - name: Build
+        run: cmake --build --preset debug
+
+  build-windows:
+    name: Build - Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake --preset debug
+
+      - name: Build
+        run: cmake --build --preset debug
+
+  build-macos:
+    name: Build - macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake --preset debug
+
+      - name: Build
+        run: cmake --build --preset debug

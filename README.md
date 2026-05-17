@@ -8,6 +8,7 @@ It focuses on conversion, processing and future lightweight library management, 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Release](https://img.shields.io/github/v/release/DostLeFan/Booker?include_prereleases&label=version)](https://github.com/DostLeFan/Booker/releases)
 [![CI Status](https://github.com/DostLeFan/Booker/actions/workflows/release.yml/badge.svg)](https://github.com/DostLeFan/Booker/actions/workflows/release.yml)
+[![CI](https://github.com/DostLeFan/Booker/actions/workflows/PR.yml/badge.svg)](https://github.com/DostLeFan/Booker/actions/workflows/PR.yml)
 [![Language](https://img.shields.io/github/languages/top/DostLeFan/Booker?color=00599C&logo=c%2B%2B)](https://github.com/DostLeFan/Booker)
 [![CMake](https://img.shields.io/badge/build-CMake-064F8C?logo=cmake&logoColor=white)](https://cmake.org/)
 [![C++17](https://img.shields.io/badge/standard-C%2B%2B17-blue?logo=c%2B%2B)](https://isocpp.org/)
@@ -19,8 +20,10 @@ It focuses on conversion, processing and future lightweight library management, 
 * [Features](#features)
 	* [Current](#current)
 	* [Planned](#planned)
+* [Dependencies](#dependencies)
 * [Architecture](#architecture)
 * [Build](#build)
+	* [About build](#about-build)
 	* [Requirements](#requirements)
 	* [Cross-platform build commands](#cross-platform-build-commands)
 * [Roadmap](#roadmap)
@@ -74,18 +77,48 @@ Supported formats and functionalities are still evolving.
 - Batch processing
 - Lightweight library management
 - Future plugin system
+- GUI (library is not decided)
+
+# Dependencies
+
+Dependencies are managed by CMake, with `FetchContent` and `ExternalProject`, so, if you are on Windows, MacOS, or Linux (Ubuntu is OK for build, not built for other distributions), you don't have to manage them.
+
+But, there is a list of the dependencies used, and why :
+- Zlib : Useful for some other dependencies, and for compress and deflate zip for CBZ archives
+- libjpeg (and libjpeg-turbo) : Useful for Poppler and take in charge a part of JPEG workflows
+- Freetype : Useful for Poppler
+- LibPNG : Useful for Poppler
+- Iconv (and win-iconv for Windows) : Useful for Poppler
+- Poppler : To read PDF and rasterization of pages
+- RarLib : My own wrapper around RAR executables ; to compress CBR archives
+- unarr : To deflate CBR archives
+- imageinfo : To get images width and height
+- LibHaru : To write PDF
+- stb_image and stb_image_write : To help libjpeg
+- libwebp : To take in charge WEBP format
+- CLI11 : To create a CLI interface
 
 # Architecture
 
 Booker is organized around a shared core architecture:
 
-core/
-├── archive handling
-├── utilities
-cli/
-gui/
+```
+Booker/
+├── core/          # Shared library: archive handling, document model, format handlers, and other logic features
+│   ├── include/   # Public headers (booker namespace)
+│   └── src/       # Implementations
+├── cli/           # Command-line interface (uses core)
+├── gui/           # GUI application (uses core)
+├── locales/       # Localization files (future feature)
+└── CMakeLists.txt # Root build configuration
+```
+
 
 # Build
+
+## About build
+
+CMake take in charge the dependencies listed above. So, the first build is very slow (around 10~15 minutes). Don't be afraid by that, it's normal.
 
 ## Requirements
 
