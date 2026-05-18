@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pull Request build workflow
 - Added a CONTRIBUTING.md file
 - Improving README
+- Re-created sample CBZ and CBR, there was a format error for images before
+- Replacing unarr by libarchive
 
 ### Changed
 

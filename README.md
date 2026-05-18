@@ -91,7 +91,7 @@ But, there is a list of the dependencies used, and why :
 - Iconv (and win-iconv for Windows) : Useful for Poppler
 - Poppler : To read PDF and rasterization of pages
 - RarLib : My own wrapper around RAR executables ; to compress CBR archives
-- unarr : To deflate CBR archives
+- libarchive : To deflate CBR archives
 - imageinfo : To get images width and height
 - LibHaru : To write PDF
 - stb_image and stb_image_write : To help libjpeg

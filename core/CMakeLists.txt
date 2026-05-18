@@ -31,6 +31,16 @@ file(WRITE "${CMAKE_BINARY_DIR}/redirects/ZLIBConfig.cmake" "
 	set(ZLIB_INCLUDE_DIRS \${zlib_SOURCE_DIR} \${zlib_BINARY_DIR})
 	set(ZLIB_LIBRARIES ZLIB::ZLIB)
 	set(ZLIB_VERSION_STRING \"1.3.1\")
+	set(ZLIB_VERSION \"1.3.1\")
+")
+
+file(WRITE "${CMAKE_BINARY_DIR}/redirects/ZLIBConfigVersion.cmake" "
+	set(PACKAGE_VERSION \"1.3.1\")
+	set(PACKAGE_VERSION_COMPATIBLE TRUE)
+	
+	if(PACKAGE_FIND_VERSION STREQUAL PACKAGE_VERSION)
+		set(PACKAGE_VERSION_EXACT TRUE)
+	endif()
 ")
 
 set(ZLIB_LIBRARY zlibstatic CACHE STRING "" FORCE)
@@ -428,33 +438,95 @@ FetchContent_MakeAvailable(RarLib)
 
 message(STATUS "RarLib downloaded.")
 
-# unarr
-message(STATUS "Downloading unarr...")
+# libarchive
+message(STATUS "Downloading and configuring libarchive...")
 
-FetchContent_Declare(
-	unarr_src
-	GIT_REPOSITORY https://github.com/selmf/unarr.git
-	GIT_TAG v1.1.1
-)
-
-FetchContent_GetProperties(unarr_src)
-
-if(NOT unarr_src_POPULATED)
-	FetchContent_Populate(unarr_src)
-	
-	file(GLOB_RECURSE UNARR_SOURCES "${unarr_src_SOURCE_DIR}/*/*.c")
-	list(FILTER UNARR_SOURCES EXCLUDE REGEX ".*/test/.*")
-	
-	add_library(unarr STATIC ${UNARR_SOURCES})
-	
-	target_include_directories(unarr PUBLIC ${unarr_src_SOURCE_DIR})
-	target_link_libraries(unarr PUBLIC ZLIB::ZLIB)
-	target_compile_definitions(unarr PRIVATE HAVE_ZLIB)
-	
-	set_target_properties(unarr PROPERTIES POSITION_INDEPENDENT_CODE ON)
+if(MSVC)
+	set(LIBARCHIVE_LIB_FILE "archive.lib")
+else()
+	set(LIBARCHIVE_LIB_FILE "${STATIC_LIB_PREFIX}archive${STATIC_LIB_SUFFIX}")
 endif()
 
-message(STATUS "unarr downloaded.")
+set(_libarchive_init_cache "${CMAKE_BINARY_DIR}/libarchive-init.cmake")
+
+file(WRITE "${_libarchive_init_cache}"
+	"set(ZLIB_WINAPI FALSE CACHE BOOL \"\" FORCE)\n"
+	"set(ZLIB_FOUND TRUE CACHE BOOL \"\" FORCE)\n"
+	"set(ZLIB_LIBRARIES \"${_shim_zlib_lib}\" CACHE FILEPATH \"\" FORCE)\n"
+	"set(ZLIB_INCLUDE_DIRS \"${zlib_SOURCE_DIR}\;${zlib_BINARY_DIR}\" CACHE PATH \"\" FORCE)\n"
+	"set(ZLIB_VERSION_STRING \"1.3.1\" CACHE STRING \"\" FORCE)\n"
+	"set(ICONV_INCLUDE_DIR \"${_shim_iconv_inc}\" CACHE PATH \"\" FORCE)\n"
+	"set(ICONV_LIBRARY \"${_shim_iconv_lib}\" CACHE FILEPATH \"\" FORCE)\n"
+)
+
+set(_libarchive_cmake_args
+	-C "${_libarchive_init_cache}"
+	-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/libarchive-install
+	-DBUILD_SHARED_LIBS=OFF
+	-DENABLE_TAR=OFF
+	-DENABLE_CPIO=OFF
+	-DENABLE_CAT=OFF
+	-DENABLE_XATTR=OFF
+	-DENABLE_ACL=OFF
+	-DENABLE_TEST=OFF
+	-DENABLE_INSTALL=ON
+	-DENABLE_WERROR=OFF
+	-DENABLE_ZLIB=ON
+	-DENABLE_ICONV=ON
+	-DENABLE_BZip2=OFF -DENABLE_LZMA=OFF -DENABLE_LZ4=OFF
+	-DENABLE_LZO=OFF -DENABLE_ZSTD=OFF -DENABLE_OPENSSL=OFF
+	-DENABLE_MBEDTLS=OFF -DENABLE_NETTLE=OFF -DENABLE_CNG=OFF
+	-DENABLE_LIBXML2=OFF -DENABLE_EXPAT=OFF -DENABLE_LIBB2=OFF
+	-DENABLE_PCREPOSIX=OFF -DENABLE_PCRE2POSIX=OFF
+)
+
+if(MSVC)
+	list(APPEND _libarchive_cmake_args
+		-DCMAKE_GENERATOR=${CMAKE_GENERATOR}
+		-DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+	)
+endif()
+
+if(WIN32)
+	list(APPEND _libarchive_cmake_args
+		-DICONV_INCLUDE_DIR=${_shim_iconv_inc}
+		-DICONV_LIBRARY=${_shim_iconv_lib}
+		-DICONV_SECOND_ARGUMENT_IS_CONST=TRUE
+	)
+endif()
+
+ExternalProject_Add(
+	libarchive-ext
+	GIT_REPOSITORY https://github.com/libarchive/libarchive.git
+	GIT_TAG v3.8.4
+	GIT_SHALLOW TRUE
+	CMAKE_ARGS ${_libarchive_cmake_args}
+	INSTALL_COMMAND ${CMAKE_COMMAND} --install <BINARY_DIR> --config ${CMAKE_BUILD_TYPE}
+	BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/libarchive-install/lib/${LIBARCHIVE_LIB_FILE}"
+)
+
+add_dependencies(libarchive-ext zlibstatic)
+
+if(WIN32)
+	add_dependencies(libarchive-ext iconv_static)
+endif()
+
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/libarchive-install/include")
+
+add_library(archive STATIC IMPORTED GLOBAL)
+add_dependencies(archive libarchive-ext)
+
+set_target_properties(archive PROPERTIES
+	IMPORTED_LOCATION "${CMAKE_BINARY_DIR}/libarchive-install/lib/${LIBARCHIVE_LIB_FILE}"
+	INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_BINARY_DIR}/libarchive-install/include"
+	INTERFACE_COMPILE_DEFINITIONS "LIBARCHIVE_STATIC"
+	INTERFACE_LINK_LIBRARIES "ZLIB::ZLIB;Iconv::Iconv"
+)
+
+add_library(LibArchive::LibArchive ALIAS archive)
+
+message(STATUS "libarchive configured (will build with the project).")
 
 # imageinfo
 message(STATUS "Downloading imageinfo...")
@@ -525,7 +597,7 @@ add_library(booker::core ALIAS ${CORE_NAME})
 target_include_directories(${CORE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(${CORE_NAME} PRIVATE ${libharu_SOURCE_DIR}/include ${libharu_BINARY_DIR}/include)
 target_compile_features(${CORE_NAME} PUBLIC cxx_std_17)
-target_link_libraries(${CORE_NAME} PRIVATE poppler-cpp poppler ZLIB::ZLIB minizip PNG::PNG JPEG::JPEG Freetype::Freetype Iconv::Iconv turbojpeg RarLib::RarLib unarr imageinfo hpdf stb WebP::webp)
+target_link_libraries(${CORE_NAME} PRIVATE poppler-cpp poppler ZLIB::ZLIB minizip PNG::PNG JPEG::JPEG Freetype::Freetype Iconv::Iconv turbojpeg RarLib::RarLib LibArchive::LibArchive imageinfo hpdf stb WebP::webp)
 
 add_dependencies(${CORE_NAME} poppler-ext libjpeg-turbo-ext)
 

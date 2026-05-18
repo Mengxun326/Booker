@@ -34,6 +34,7 @@ namespace booker
 				info.mimeType = mimeFromExtension(entry.name);
 				
 				std::filesystem::path tempPath = std::filesystem::temp_directory_path() / entry.name;
+				std::filesystem::create_directories(tempPath.parent_path());
 				std::ofstream ofs(tempPath, std::ios::binary);
 				reader.extractToStream(entry, ofs);
 				ofs.close();

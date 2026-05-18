@@ -11,7 +11,7 @@
 #include <filesystem>
 #include <vector>
 #include <utility>
-#include <unarr.h>
+#include <archive.h>
 #include "ArchiveUtils.hpp"
 
 namespace booker
@@ -55,12 +55,11 @@ namespace booker
 		
 		private:
 			std::filesystem::path m_path;
-			ar_stream* m_stream;
-			ar_archive* m_handle;
+			archive* m_handle;
 			std::vector<EntryInfo> m_cachedEntries;
 			bool m_isCachedEntries = false;
 			
-			std::pair<ar_stream*, ar_archive*> reopen() const;
+			archive* reopen() const;
 	};
 }
 
