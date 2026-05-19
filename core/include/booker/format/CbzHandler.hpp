@@ -1,10 +1,15 @@
 #ifndef DEF_CBZHANDLER
 #define DEF_CBZHANDLER
 
+/** @file CbzHandler.hpp
+ *  @brief Handler for CBZ comic archives (ZIP containers of images).
+ */
+
 #include "IFormatHandler.hpp"
 
 namespace booker
 {
+	/** @brief Reads and writes CBZ files (.cbz, .zip). */
 	class CbzHandler : public IFormatHandler
 	{
 		public:

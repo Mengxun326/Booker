@@ -1,10 +1,15 @@
 #ifndef DEF_CBRHANDLER
 #define DEF_CBRHANDLER
 
+/** @file CbrHandler.hpp
+ *  @brief Handler for CBR comic archives (RAR containers of images).
+ */
+
 #include "IFormatHandler.hpp"
 
 namespace booker
 {
+	/** @brief Reads and writes CBR files (.cbr, .rar). */
 	class CbrHandler : public IFormatHandler
 	{
 		public:

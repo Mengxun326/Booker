@@ -1,10 +1,15 @@
 #ifndef DEF_PDFHANDLER
 #define DEF_PDFHANDLER
 
+/** @file PdfHandler.hpp
+ *  @brief Handler for PDF documents.
+ */
+
 #include "IFormatHandler.hpp"
 
 namespace booker
 {
+	/** @brief Reads and writes PDF files (.pdf) using Poppler and LibHaru. */
 	class PdfHandler : public IFormatHandler
 	{
 		public:
